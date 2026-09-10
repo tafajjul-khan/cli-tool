@@ -1,0 +1,19 @@
+{
+  "name": "tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "tool": "./bin/index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "type": "module",
+  "dependencies": {
+    "arg": "^5.0.2",
+    "chalk": "^6.0.0",
+    "pkg-up": "^4.0.0"
+  }
+}
