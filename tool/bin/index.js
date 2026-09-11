@@ -1,31 +1,24 @@
 #!/usr/bin/env node
-// console.log(process.argv)
 
 import arg from "arg"
-import chalk from "chalk";
-// import pkg from './package.json' its not works becouse of becouse realtive path problems , missing assertion, top level dynamic path problems
-import fs from "fs";
-// import path from "path"; 
-import {pkgUpSync} from "pkg-up";
+import { createLogger } from "../src/logger.js";
 import {start} from "../src/commands/start.js"
 import { getConfig } from "../src/config/config-mgr.js"
 
-// const pkgPath = path.join(process.cwd(), 'package.json');
-// const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
-
+const logger = createLogger('bin')
 try {
     const args = arg({
         '--start': Boolean,
         '--build': Boolean,
     })
     
-    // console.log(args);
+    logger.debug("Recieved args", args);
     if(args["--start"]){
         const config = getConfig();
         start(config)
     }
 } catch (error) {
-    console.error(chalk.yellowBright(error.message))
+    logger.warnings(error.message)
     console.log();
     usage();
 }

@@ -1,33 +1,29 @@
-#!/usr/bin/env node
-// console.log(process.argv)
+import { createLogger } from "../logger.js";
+import {cosmiconfigSync} from "cosmiconfig"
+import schema from './schema.json' with { type: 'json' };
+import betterArgvErrors from "better-ajv-errors"
+import ajv from "ajv";
 
-import arg from "arg"
-import chalk from "chalk";
-import fs from "fs"
-import { pkgUpSync } from "pkg-up";
 
+const configLoader = cosmiconfigSync('tool');
+const Ajv = new ajv()
+const logger = createLogger("config-mgr");
 
 export function getConfig() {
-    const pkgPath = pkgUpSync({ cwd: process.cwd() });
-    if (pkgPath) {
-        const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf-8'));
+    const result = configLoader.search(process.cwd());
 
-        if (pkg.tool) {
-            console.log(chalk.green("Found configuration", pkg.tool));
-            return pkg.tool;
-        } else {
-            console.log(chalk.yellow("Could not find tool configuration"));
+    if(!result){
+        logger.warnings("Could not fin configurations, using default");
+        return {port: 1234};
+    }else{
+        const  isValid = Ajv.validate(schema, result.config);
+        if(!isValid){
+            logger.warnings("Invalid configurations suppiled");
+            console.log();
+            console.log(betterArgvErrors(schema, result.config, Ajv.errors));
+            process.exit(1);
         }
-    } else if (hashJSConfigFile()) {
-        return loadJSConfigFile();
+        logger.debug('Found configuration', result.config);
+        return result.config;
     }
-    else {
-        console.log(chalk.red('Pakcage.json file not found!'))
-        return {
-            port: 3000,
-            mode: "development"
-        }
-    }
-    console.log(chalk.bgCyanBright("tool start"))
-
 }

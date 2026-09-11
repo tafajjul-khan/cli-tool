@@ -29,3 +29,7 @@ i use a chalk library for better ux and for some features like:-
 - 3. Easy Syntax
 
 pkg-up i used it becouse it find a packge.json file in parent directory and folder tree
+
+cosmicconfig:- i use this lirbary to configure ,search , load and parse configuration settings in my application.
+
+better-ajv-error used for show right errors.
